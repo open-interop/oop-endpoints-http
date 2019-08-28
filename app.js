@@ -4,6 +4,12 @@ const { logger } = require("./logger");
 const mustache = require("mustache");
 const fetch = require("node-fetch");
 
+var previousRequest = Promise.resolve();
+
+const sleep = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+};
+
 amqp.connect(config.amqpAddress)
     .then(conn => {
         return conn.createChannel().then(async ch => {
@@ -38,7 +44,7 @@ amqp.connect(config.amqpAddress)
                 var map = obj => {
                     var ret = {};
 
-                    for (key in obj) {
+                    for (const key in obj) {
                         ret[key] = render(obj[key]);
                     }
 
@@ -61,9 +67,18 @@ amqp.connect(config.amqpAddress)
                     options.body = render(body);
                 }
 
-                fetch(url, options).then(() => {
-                    logger.info(`Sent message ${data.uuid}`);
-                    ch.ack(message);
+                previousRequest = previousRequest.then(() => {
+                    return fetch(url, options)
+                        .then(() => {
+                            logger.info(`Sent message ${data.uuid}`);
+                            ch.ack(message);
+                        })
+                        .catch(() => {
+                            logger.error(`Unable to send message ${data.uuid}`);
+                        })
+                        .then(() => {
+                            return sleep(config.requestTimeout);
+                        });
                 });
             });
         });
