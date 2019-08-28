@@ -13,13 +13,7 @@ const sleep = timeout => {
 amqp.connect(config.amqpAddress)
     .then(conn => {
         return conn.createChannel().then(async ch => {
-            console.log("here");
             await ch.assertQueue(`${config.oopEndpointsQ}.http`);
-            console.log(
-                `${config.oopEndpointsQ}.http`,
-                config.endpointsExchangeName,
-                `${config.oopEndpointsQ}.http`
-            );
             await ch.bindQueue(
                 `${config.oopEndpointsQ}.http`,
                 config.endpointsExchangeName,
@@ -28,24 +22,32 @@ amqp.connect(config.amqpAddress)
 
             return ch.consume(`${config.oopEndpointsQ}.http`, message => {
                 var data = JSON.parse(message.content.toString("utf8"));
-                console.log(mustache.render(data.tempr.template.body, data));
+                logger.info(`Processing ${data.uuid}.`);
 
                 var {
                     host,
                     port,
                     path,
-                    request_method,
+                    requestMethod,
                     headers,
                     body,
                     protocol
                 } = data.tempr.template;
 
-                var render = val => mustache.render(String(val), data);
-                var map = obj => {
+                var render = val => {
+                    if (typeof val === "undefined") {
+                        return "";
+                    }
+
+                    return mustache.render(String(val), data);
+                };
+                var map = array => {
                     var ret = {};
 
-                    for (const key in obj) {
-                        ret[key] = render(obj[key]);
+                    for (const obj of array) {
+                        for (const key in obj) {
+                            ret[key] = render(obj[key]);
+                        }
                     }
 
                     return ret;
@@ -60,21 +62,52 @@ amqp.connect(config.amqpAddress)
 
                 var options = {
                     headers: map(headers),
-                    method: render(request_method)
+                    method: render(requestMethod)
                 };
 
-                if (request_method.toUpperCase() !== "GET") {
-                    options.body = render(body);
+                const renderedBody = render(body);
+
+                if (!options.method) {
+                    if (renderedBody) {
+                        options.method = "POST";
+                    } else {
+                        options.method = "GET";
+                    }
+                }
+
+                if (options.method.toUpperCase() !== "GET") {
+                    options.body = renderedBody;
                 }
 
                 previousRequest = previousRequest.then(() => {
                     return fetch(url, options)
-                        .then(() => {
+                        .then(async res => {
                             logger.info(`Sent message ${data.uuid}`);
+
+                            const responseData = {
+                                success: res.status === 200,
+                                status: res.status,
+                                datetime: new Date(),
+                                messageId: data.uuid,
+                                deviceId: data.device.id,
+                                deviceTemprId: data.tempr.deviceTemprId
+                            };
+
+                            if (data.tempr.queueResponse) {
+                                responseData.body = await res.text();
+                            }
+
+                            ch.sendToQueue(
+                                config.coreResponseQ,
+                                Buffer.from(JSON.stringify(responseData))
+                            );
+
                             ch.ack(message);
                         })
                         .catch(() => {
-                            logger.error(`Unable to send message ${data.uuid}`);
+                            logger.error(`Unknown error occured ${data.uuid}`);
+
+                            ch.nack(message);
                         })
                         .then(() => {
                             return sleep(config.requestTimeout);
