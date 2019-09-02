@@ -42,7 +42,7 @@ amqp.connect(config.amqpAddress)
                     return mustache.render(String(val), data);
                 };
                 var map = array => {
-                    if (!array.length) {
+                    if (!(array && array.length)) {
                         return {};
                     }
 
