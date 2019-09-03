@@ -42,6 +42,10 @@ amqp.connect(config.amqpAddress)
                     return mustache.render(String(val), data);
                 };
                 var map = array => {
+                    if (!(array && array.length)) {
+                        return {};
+                    }
+
                     var ret = {};
 
                     for (const obj of array) {
