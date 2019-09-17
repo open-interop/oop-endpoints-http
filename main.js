@@ -18,15 +18,20 @@ module.exports = async (broker, config, logger) => {
 
         logger.info(`Rendering ${data.uuid}.`);
 
-        var {
-            host,
-            port,
-            path,
-            requestMethod,
-            headers,
-            body,
-            protocol
-        } = await renderer(data, data.tempr.template);
+        try {
+            var {
+                host,
+                port,
+                path,
+                requestMethod,
+                headers,
+                body,
+                protocol
+            } = await renderer(data, data.tempr.template);
+        } catch (e) {
+            logger.error(e);
+            return previousRequest;
+        }
 
         var url =
             protocol +
