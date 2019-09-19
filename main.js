@@ -1,7 +1,5 @@
 const fetch = require("node-fetch");
 
-const renderer = require("./lib/renderer");
-
 var previousRequest = Promise.resolve();
 
 const sleep = timeout => {
@@ -16,7 +14,7 @@ module.exports = async (broker, config, logger) => {
     return broker.consume(queue, async message => {
         var data = message.content;
 
-        logger.info(`Rendering ${data.uuid}.`);
+        logger.info(`Processing ${data.uuid}.`);
 
         try {
             var {
@@ -27,7 +25,7 @@ module.exports = async (broker, config, logger) => {
                 headers,
                 body,
                 protocol
-            } = await renderer(data, data.tempr.template);
+            } = data.rendered;
         } catch (e) {
             logger.error(e);
             return previousRequest;
