@@ -42,7 +42,7 @@ module.exports = async (broker, config, logger) => {
 
         for (let header of headers) {
             for (let key in header) {
-                processedHeaders.append([key, header[key]]);
+                processedHeaders.push([key, header[key]]);
             }
         }
 
