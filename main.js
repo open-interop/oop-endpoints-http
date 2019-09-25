@@ -38,8 +38,16 @@ module.exports = async (broker, config, logger) => {
             (port ? ":" + port : "") +
             path;
 
+        var processedHeaders = [];
+
+        for (let header of headers) {
+            for (let key in header) {
+                processedHeaders.append([key, header[key]]);
+            }
+        }
+
         var options = {
-            headers: headers,
+            headers: processedHeaders,
             method: requestMethod
         };
 
