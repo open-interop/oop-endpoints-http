@@ -75,7 +75,7 @@ module.exports = async (broker, config, logger) => {
                         messageId: data.uuid,
                         deviceId: data.device.id,
                         deviceTemprId: data.tempr.deviceTemprId,
-                        transmissionUuid: data.transmissionUuid,
+                        transmissionId: data.transmissionId,
                     };
 
                     if (data.tempr.queueResponse) {
