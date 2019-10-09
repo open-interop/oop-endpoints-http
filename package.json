@@ -1,7 +1,7 @@
 {
-  "name": "oop-translator",
+  "name": "oop-endpoints-http",
   "version": "0.0.1",
-  "description": "Translation service for OpenInterop",
+  "description": "HTTP endpoint service for OpenInterop",
   "main": "app.js",
   "license": "AGPL-3.0",
   "scripts": {
@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "dotenv": "^8.0.0",
-    "isolated-vm": "^2.0.1",
-    "mustache": "^3.0.2",
     "node-fetch": "^2.6.0",
     "oop-node-common": "https://github.com/open-interop/oop-node-common#develop"
   },
