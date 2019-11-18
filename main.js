@@ -70,14 +70,18 @@ module.exports = async (broker, config, logger) => {
                         transmissionId: data.transmissionId,
                     };
 
+                    if (data.tempr.queueRequest) {
+                        responseData.requestBody = data.message.body;
+                    }
+
                     if (data.tempr.queueResponse) {
-                        responseData.body = await res.text();
+                        responseData.responseBody = await res.text();
                     }
 
                     broker.publish(
                         config.exchangeName,
                         config.coreResponseQ,
-                        responseData
+                        responseData,
                     );
 
                     message.ack();
