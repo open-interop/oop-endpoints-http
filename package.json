@@ -6,7 +6,8 @@
   "license": "AGPL-3.0",
   "scripts": {
     "test": "ava",
-    "lint": "eslint --fix ./**/*.js"
+    "lint": "eslint --fix ./**/*.js",
+    "test-lint": "eslint ./**/*.js"
   },
   "dependencies": {
     "dotenv": "^8.0.0",
