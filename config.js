@@ -1,11 +1,9 @@
-const dotenv = require("dotenv");
+const oop = require("oop-node-common");
 
-dotenv.config();
-
-module.exports = {
-    amqpAddress: process.env.OOP_AMQP_ADDRESS,
-    endpointsExchangeName: process.env.OOP_ENDPOINTS_EXCHANGE_NAME,
-    oopEndpointsQ: process.env.OOP_ENDPOINT_Q,
-    requestTimeout: process.env.OOP_REQUEST_TIMEOUT,
-    coreResponseQ: process.env.OOP_CORE_RESPONSE_Q
-};
+module.exports = new oop.Config({
+    amqpAddress: "OOP_AMQP_ADDRESS",
+    endpointsExchangeName: "OOP_ENDPOINTS_EXCHANGE_NAME",
+    oopEndpointsQ: "OOP_ENDPOINT_Q",
+    requestTimeout: "OOP_REQUEST_TIMEOUT",
+    coreResponseQ: "OOP_CORE_RESPONSE_Q"
+});

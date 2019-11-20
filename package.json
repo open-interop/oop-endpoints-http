@@ -10,7 +10,6 @@
     "test-lint": "eslint ./**/*.js"
   },
   "dependencies": {
-    "dotenv": "^8.0.0",
     "node-fetch": "^2.6.0",
     "oop-node-common": "https://github.com/open-interop/oop-node-common#develop"
   },
