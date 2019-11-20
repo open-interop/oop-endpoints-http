@@ -6,7 +6,8 @@
   "license": "AGPL-3.0",
   "scripts": {
     "test": "ava",
-    "lint": "eslint --fix ./**/*.js"
+    "lint": "eslint --fix ./**/*.js",
+    "test-lint": "eslint ./**/*.js"
   },
   "dependencies": {
     "dotenv": "^8.0.0",
@@ -27,7 +28,9 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-standard": "^1.0.2",
+    "fetch-mock": "^8.0.0",
     "husky": "^3.0.2",
+    "mock-require": "^3.0.3",
     "prettier": "^1.18.2"
   },
   "husky": {

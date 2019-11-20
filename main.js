@@ -7,9 +7,9 @@ const sleep = timeout => {
 };
 
 module.exports = async (broker, config, logger) => {
-    let queue = `${config.oopEndpointsQ}.http`;
+    const queue = `${config.oopEndpointsQ}.http`;
 
-    await broker.create(queue, config.endpointsExchangeName)
+    await broker.create(queue, config.endpointsExchangeName);
 
     return broker.consume(queue, async message => {
         var data = message.content;
@@ -31,12 +31,7 @@ module.exports = async (broker, config, logger) => {
             return previousRequest;
         }
 
-        var url =
-            protocol +
-            "://" +
-            host +
-            (port ? ":" + port : "") +
-            path;
+        var url = protocol + "://" + host + (port ? ":" + port : "") + path;
 
         var options = {
             headers: headers,
@@ -67,7 +62,7 @@ module.exports = async (broker, config, logger) => {
                         messageId: data.uuid,
                         deviceId: data.device.id,
                         deviceTemprId: data.tempr.deviceTemprId,
-                        transmissionId: data.transmissionId,
+                        transmissionId: data.transmissionId
                     };
 
                     if (data.tempr.queueRequest) {
@@ -81,7 +76,7 @@ module.exports = async (broker, config, logger) => {
                     broker.publish(
                         config.exchangeName,
                         config.coreResponseQ,
-                        responseData,
+                        responseData
                     );
 
                     message.ack();
