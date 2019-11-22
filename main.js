@@ -31,6 +31,17 @@ module.exports = async (broker, config, logger) => {
             return previousRequest;
         }
 
+        host = host.replace(/\s/g, "");
+        port = port ? parseInt(port) : "";
+        protocol = protocol.toLowerCase();
+
+        if (!/https?/.test(protocol)) {
+            data.retries = config.maxRetryAttempts;
+            throw new Error(
+                `"${protocol} is not a valid protocol, please specify either http or https.`
+            );
+        }
+
         var url = protocol + "://" + host + (port ? ":" + port : "") + path;
 
         var options = {
@@ -55,36 +66,49 @@ module.exports = async (broker, config, logger) => {
                 .then(async res => {
                     logger.info(`Sent message ${data.uuid}`);
 
-                    const responseData = {
-                        success: res.status === 200,
-                        status: res.status,
+                    data.response = {
                         datetime: new Date(),
-                        messageId: data.uuid,
-                        deviceId: data.device.id,
-                        deviceTemprId: data.tempr.deviceTemprId,
-                        transmissionId: data.transmissionId
+                        body: await res.text(),
+                        status: res.status,
+                        headers: (() => {
+                            const headers = {};
+                            for (const [key, value] of res.headers) {
+                                headers[key] = value;
+                            }
+                            return headers;
+                        })()
                     };
-
-                    if (data.tempr.queueRequest) {
-                        responseData.requestBody = data.message.body;
-                    }
-
-                    if (data.tempr.queueResponse) {
-                        responseData.responseBody = await res.text();
-                    }
 
                     broker.publish(
                         config.exchangeName,
                         config.coreResponseQ,
-                        responseData
+                        data
                     );
-
-                    message.ack();
                 })
                 .catch(err => {
-                    console.error(err);
+                    logger.error(err);
 
-                    message.nack();
+                    if (!("retries" in data)) {
+                        data.retries = 1;
+                    } else {
+                        data.retries++;
+                    }
+
+                    if (data.retries >= config.maxRetryAttempts) {
+                        data.error = err;
+
+                        broker.publish(
+                            config.errorExchangeName,
+                            config.errorQ,
+                            data
+                        );
+                    } else {
+                        broker.publish(
+                            config.endpointsExchangeName,
+                            queue,
+                            data
+                        );
+                    }
                 })
                 .then(() => {
                     return sleep(config.requestTimeout);

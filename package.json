@@ -5,6 +5,7 @@
   "main": "app.js",
   "license": "AGPL-3.0",
   "scripts": {
+    "start": "node app",
     "test": "ava",
     "lint": "eslint --fix ./**/*.js",
     "test-lint": "eslint ./**/*.js"
