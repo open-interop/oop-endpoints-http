@@ -34,7 +34,7 @@ test("request works", async t => {
                             body: "test"
                         },
                         tempr: {
-                            deviceTemprId: 1
+                            deviceTemprId: 1,
                             rendered: {
                                 host: "example.com",
                                 port: "",
@@ -43,8 +43,8 @@ test("request works", async t => {
                                 headers: {},
                                 body: "",
                                 protocol: "http"
-                            },
-                        },
+                            }
+                        }
                     },
                     ack: () => {},
                     nack: () => {}
@@ -52,9 +52,9 @@ test("request works", async t => {
             },
             publish: (exchange, queue, message) => {
                 t.is(message.retries, undefined);
-                t.is(message.response.body, "Hello, World!");
-                t.is(message.response.headers["content-length"], "13");
-                t.is(message.response.status, 200);
+                t.is(message.tempr.response.body, "Hello, World!");
+                t.is(message.tempr.response.headers["content-length"], "13");
+                t.is(message.tempr.response.status, 200);
 
                 resolve();
             }
@@ -95,17 +95,17 @@ test("request retries then posts to error queue", async t => {
                         tempr: {
                             deviceTemprId: 1,
                             queueRequest: true,
-                            queueResponse: true
+                            queueResponse: true,
+                            rendered: {
+                                host: "other.com",
+                                port: "",
+                                path: "/",
+                                requestMethod: "GET",
+                                headers: {},
+                                body: "",
+                                protocol: "http"
+                            }
                         },
-                        rendered: {
-                            host: "other.com",
-                            port: "",
-                            path: "/",
-                            requestMethod: "GET",
-                            headers: {},
-                            body: "",
-                            protocol: "http"
-                        }
                     },
                     ack: () => {},
                     nack: () => {}
