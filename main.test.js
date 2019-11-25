@@ -35,16 +35,16 @@ test("request works", async t => {
                         },
                         tempr: {
                             deviceTemprId: 1
+                            rendered: {
+                                host: "example.com",
+                                port: "",
+                                path: "/",
+                                requestMethod: "GET",
+                                headers: {},
+                                body: "",
+                                protocol: "http"
+                            },
                         },
-                        rendered: {
-                            host: "example.com",
-                            port: "",
-                            path: "/",
-                            requestMethod: "GET",
-                            headers: {},
-                            body: "",
-                            protocol: "http"
-                        }
                     },
                     ack: () => {},
                     nack: () => {}
