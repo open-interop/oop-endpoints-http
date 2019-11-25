@@ -105,7 +105,7 @@ test("request retries then posts to error queue", async t => {
                                 body: "",
                                 protocol: "http"
                             }
-                        },
+                        }
                     },
                     ack: () => {},
                     nack: () => {}
