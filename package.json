@@ -6,7 +6,7 @@
   "license": "AGPL-3.0",
   "scripts": {
     "start": "node app",
-    "test": "ava",
+    "test": "nyc ava",
     "lint": "eslint --fix ./**/*.js",
     "test-lint": "eslint ./**/*.js"
   },
@@ -31,6 +31,7 @@
     "fetch-mock": "^8.0.0",
     "husky": "^3.0.2",
     "mock-require": "^3.0.3",
+    "nyc": "^14.1.1",
     "prettier": "^1.18.2"
   },
   "husky": {

@@ -25,7 +25,7 @@ module.exports = async (broker, config, logger) => {
                 headers,
                 body,
                 protocol
-            } = data.rendered;
+            } = data.tempr.rendered;
         } catch (e) {
             logger.error(e);
             return previousRequest;
@@ -66,7 +66,7 @@ module.exports = async (broker, config, logger) => {
                 .then(async res => {
                     logger.info(`Sent message ${data.uuid}`);
 
-                    data.response = {
+                    data.tempr.response = {
                         datetime: new Date(),
                         body: await res.text(),
                         status: res.status,
