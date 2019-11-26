@@ -68,6 +68,7 @@ module.exports = async (broker, config, logger) => {
 
                     data.tempr.response = {
                         datetime: new Date(),
+                        success: res.status >= 200 && res.status < 300,
                         body: await res.text(),
                         status: res.status,
                         headers: (() => {
@@ -81,7 +82,7 @@ module.exports = async (broker, config, logger) => {
 
                     broker.publish(
                         config.exchangeName,
-                        config.coreResponseQ,
+                        config.httpOutputQ,
                         data
                     );
                 })
@@ -95,11 +96,15 @@ module.exports = async (broker, config, logger) => {
                     }
 
                     if (data.retries >= config.maxRetryAttempts) {
-                        data.error = err;
+                        data.tempr.response = {
+                            datetime: new Date(),
+                            success: false,
+                            error: `Unable to do transmission: '${err}'.`
+                        };
 
                         broker.publish(
-                            config.errorExchangeName,
-                            config.errorQ,
+                            config.exchangeName,
+                            config.httpOutputQ,
                             data
                         );
                     } else {
