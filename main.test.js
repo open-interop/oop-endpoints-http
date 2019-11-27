@@ -127,8 +127,8 @@ test("request retries then posts to error queue", async t => {
         main(
             broker,
             {
-                errorExchangeName: "error.exchange",
-                errorQ: "error.q",
+                exchangeName: "error.exchange",
+                httpOutputQ: "error.q",
                 maxRetryAttempts: 2
             },
             mockConsole
