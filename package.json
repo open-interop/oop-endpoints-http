@@ -1,6 +1,6 @@
 {
   "name": "oop-endpoints-http",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HTTP endpoint service for OpenInterop",
   "main": "app.js",
   "license": "AGPL-3.0",
