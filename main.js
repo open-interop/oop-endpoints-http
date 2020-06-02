@@ -58,6 +58,10 @@ module.exports = async (broker, config, logger) => {
         }
 
         if (options.method.toUpperCase() !== "GET") {
+            if (typeof body !== "string") {
+                body = JSON.stringify(body);
+            }
+
             options.body = body;
         }
 
