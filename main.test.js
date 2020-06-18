@@ -139,7 +139,6 @@ test("request retries then posts to error queue", async t => {
 });
 
 test("Missing tempr doesn't crash", async t => {
-
     const p = new Promise((resolve, reject) => {
         const broker = {
             create: () => {},
@@ -153,7 +152,7 @@ test("Missing tempr doesn't crash", async t => {
                         },
                         message: {
                             body: "test"
-                        },
+                        }
                     },
                     ack: () => {},
                     nack: () => {}
@@ -163,7 +162,7 @@ test("Missing tempr doesn't crash", async t => {
                 t.pass();
             },
             publish: (exchange, queue, response) => {
-                reject();
+                reject(new Error("This test should not publish"));
             }
         };
 
