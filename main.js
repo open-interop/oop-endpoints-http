@@ -16,6 +16,12 @@ module.exports = async (broker, config, logger) => {
 
         logger.info(`Processing ${data.uuid}.`);
 
+        if (!(data.tempr && data.tempr.rendered)) {
+            logger.error(`No tempr associated with ${data.uuid}. Discarding.`);
+
+            return;
+        }
+
         try {
             var {
                 host,
