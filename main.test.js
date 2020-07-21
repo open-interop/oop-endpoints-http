@@ -137,3 +137,45 @@ test("request retries then posts to error queue", async t => {
 
     await p;
 });
+
+test("Missing tempr doesn't crash", async t => {
+    const p = new Promise((resolve, reject) => {
+        const broker = {
+            create: () => {},
+            consume: async (queue, callback) => {
+                await callback({
+                    content: {
+                        uuid: "000000-0000-0000-000000",
+                        transmissionId: 1,
+                        device: {
+                            id: 1
+                        },
+                        message: {
+                            body: "test"
+                        }
+                    },
+                    ack: () => {},
+                    nack: () => {}
+                });
+
+                resolve();
+                t.pass();
+            },
+            publish: (exchange, queue, response) => {
+                reject(new Error("This test should not publish"));
+            }
+        };
+
+        main(
+            broker,
+            {
+                exchangeName: "error.exchange",
+                httpOutputQ: "error.q",
+                maxRetryAttempts: 2
+            },
+            mockConsole
+        );
+    });
+
+    await p;
+});
