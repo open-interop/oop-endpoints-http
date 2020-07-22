@@ -9,8 +9,6 @@ const sleep = timeout => {
 module.exports = async (broker, config, logger) => {
     const queue = `${config.oopEndpointsQ}.http`;
 
-    await broker.create(queue, config.endpointsExchangeName);
-
     return broker.consume(queue, async message => {
         var data = message.content;
 
