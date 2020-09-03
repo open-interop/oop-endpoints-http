@@ -11,6 +11,7 @@
     "test-lint": "eslint ./**/*.js"
   },
   "dependencies": {
+    "chalk": "^4.1.0",
     "node-fetch": "^2.6.0",
     "oop-node-common": "^1.0.6"
   },

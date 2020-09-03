@@ -1,6 +1,6 @@
 const oop = require("oop-node-common");
 const config = require("./config");
-const main = require("./main");
+const main = require(config.multiAccountMode ? "./manager" : "./main");
 
 const MessageBroker = oop.MessageBroker;
 
