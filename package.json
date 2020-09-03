@@ -2,10 +2,10 @@
   "name": "oop-endpoints-http",
   "version": "1.0.7",
   "description": "HTTP endpoint service for OpenInterop",
-  "main": "app.js",
+  "main": "main.js",
   "license": "AGPL-3.0",
   "scripts": {
-    "start": "node app",
+    "start": "node app.js",
     "test": "nyc ava",
     "lint": "eslint --fix ./**/*.js",
     "test-lint": "eslint ./**/*.js"
