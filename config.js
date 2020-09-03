@@ -8,8 +8,15 @@ module.exports = new oop.Config({
     httpOutputQ: "OOP_ENDPOINTS_HTTP_OUTPUT_Q",
     requestTimeout: "OOP_REQUEST_TIMEOUT",
     maxRetryAttempts: "OOP_ENDPOINTS_HTTP_MAX_RETRIES",
-    multiAccountMode: { name: "OOP_MULTI_ACCOUNT_MODE", optional: true, default: false },
+    multiAccountMode: {
+        name: "OOP_MULTI_ACCOUNT_MODE",
+        optional: true,
+        default: false
+    },
     coreApiUrl: { name: "OOP_CORE_API_URL", optional: true },
     coreToken: { name: "OOP_CORE_TOKEN", optional: true },
-    coreAccountUpdateExchange: { name: "OOP_CORE_ACCOUNT_UPDATE_EXCHANGE", optional: true },
+    coreAccountUpdateExchange: {
+        name: "OOP_CORE_ACCOUNT_UPDATE_EXCHANGE",
+        optional: true
+    }
 });

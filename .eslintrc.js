@@ -17,7 +17,7 @@ module.exports = {
         curly: ["error", "all"],
         "standard/no-callback-literal": "off",
         "prettier/prettier": "error",
-        "linebreak-style": ["error", "windows"],
+        "linebreak-style": ["error", "unix"],
         "new-cap": ["error", { "newIsCapExceptionPattern": "^winston\.." }]
     }
 };

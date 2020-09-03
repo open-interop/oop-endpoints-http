@@ -41,7 +41,6 @@ const setupProcess = account => {
 const close = () => {
     globalClose = true;
 
-
     for (const proc of Object.values(accounts)) {
         proc.kill();
     }
@@ -52,14 +51,14 @@ const close = () => {
     }, 1);
 };
 
-const join = (...args) => args.map(p => p.replace(/^\/*(.*?)\/*$/, "$1")).join("/");
+const join = (...args) =>
+    args.map(p => p.replace(/^\/*(.*?)\/*$/, "$1")).join("/");
 
 const main = async (broker, config, _logger) => {
     logger = _logger;
-    const accountList = await fetch(
-        join(config.coreApiUrl, "accounts"),
-        { headers: { "X-Core-Token": config.coreToken } },
-    ).then(res => res.json());
+    const accountList = await fetch(join(config.coreApiUrl, "accounts"), {
+        headers: { "X-Core-Token": config.coreToken }
+    }).then(res => res.json());
 
     logger.info("Manager Process Started");
 
