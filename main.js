@@ -85,7 +85,8 @@ module.exports = async (broker, config, logger) => {
                                 headers[key] = value;
                             }
                             return headers;
-                        })()
+                        })(),
+                        error: null
                     };
 
                     broker.publish(
@@ -97,31 +98,20 @@ module.exports = async (broker, config, logger) => {
                 .catch(err => {
                     logger.error(err);
 
-                    if (!("retries" in data)) {
-                        data.retries = 1;
-                    } else {
-                        data.retries++;
-                    }
+                    data.tempr.response = {
+                        datetime: new Date(),
+                        success: false,
+                        body: null,
+                        status: null,
+                        headers: null,
+                        error: err
+                    };
 
-                    if (data.retries >= config.maxRetryAttempts) {
-                        data.tempr.response = {
-                            datetime: new Date(),
-                            success: false,
-                            error: `Unable to do transmission: '${err}'.`
-                        };
-
-                        broker.publish(
-                            config.exchangeName,
-                            config.httpOutputQ,
-                            data
-                        );
-                    } else {
-                        broker.publish(
-                            config.endpointsExchangeName,
-                            queue,
-                            data
-                        );
-                    }
+                    broker.publish(
+                        config.exchangeName,
+                        config.httpOutputQ,
+                        data
+                    );
                 })
                 .then(() => {
                     return sleep(config.requestTimeout);

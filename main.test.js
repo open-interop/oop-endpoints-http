@@ -74,14 +74,13 @@ test("request works", async t => {
     await p;
 });
 
-test("request retries then posts to error queue", async t => {
-    t.plan(3);
+test("request posts to error queue", async t => {
+    t.plan(1);
 
     const p = new Promise(resolve => {
         const broker = {
             create: () => {},
             consume: (queue, callback) => {
-                broker.callback = callback;
                 callback({
                     content: {
                         uuid: "000000-0000-0000-000000",
@@ -112,15 +111,9 @@ test("request retries then posts to error queue", async t => {
                 });
             },
             publish: (exchange, queue, response) => {
-                broker.publish = (exchange, queue, response) => {
-                    t.is(exchange, "error.exchange");
-                    t.is(queue, "error.q");
-                    t.is(response.retries, 2);
+                t.is(response.tempr.response.success, false);
 
-                    resolve();
-                };
-
-                broker.callback({ content: response });
+                resolve();
             }
         };
 
