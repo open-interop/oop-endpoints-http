@@ -99,7 +99,7 @@ test("serialize json works", async t => {
                                 path: "/",
                                 requestMethod: "POST",
                                 headers: { "Content-Type": "application/json" },
-                                body: { "foo": "bar" },
+                                body: { foo: "bar" },
                                 protocol: "http"
                             }
                         }
@@ -153,8 +153,11 @@ test("serialize form encoded works", async t => {
                                 port: "",
                                 path: "/",
                                 requestMethod: "POST",
-                                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                                body: { "foo": "bar", "bim": "baz" },
+                                headers: {
+                                    "Content-Type":
+                                        "application/x-www-form-urlencoded"
+                                },
+                                body: { foo: "bar", bim: "baz" },
                                 protocol: "http"
                             }
                         }
