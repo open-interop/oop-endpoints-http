@@ -1,5 +1,7 @@
 const fetch = require("node-fetch");
 
+const serialize = require("./serializer");
+
 var previousRequest = Promise.resolve();
 
 const sleep = timeout => {
@@ -62,11 +64,7 @@ module.exports = async (broker, config, logger) => {
         }
 
         if (options.method.toUpperCase() !== "GET") {
-            if (typeof body !== "string") {
-                body = JSON.stringify(body);
-            }
-
-            options.body = body;
+            options.body = serialize(body, headers);
         }
 
         previousRequest = previousRequest.then(() => {
