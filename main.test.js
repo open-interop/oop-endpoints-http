@@ -74,6 +74,116 @@ test("request works", async t => {
     await p;
 });
 
+test("serialize json works", async t => {
+    t.plan(1);
+
+    return new Promise(resolve => {
+        const broker = {
+            create: () => {},
+            consume: (queue, callback) => {
+                callback({
+                    content: {
+                        uuid: "000000-0000-0000-000000",
+                        transmissionId: 1,
+                        device: {
+                            id: 1
+                        },
+                        message: {
+                            body: "test"
+                        },
+                        tempr: {
+                            deviceTemprId: 1,
+                            rendered: {
+                                host: "example.com",
+                                port: "",
+                                path: "/",
+                                requestMethod: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: { "foo": "bar" },
+                                protocol: "http"
+                            }
+                        }
+                    },
+                    ack: () => {},
+                    nack: () => {}
+                });
+            },
+            publish: (exchange, queue, message) => {
+                const lastReq = sandbox.lastOptions();
+
+                t.is('{"foo":"bar"}', lastReq.body);
+
+                resolve();
+            }
+        };
+
+        main(
+            broker,
+            {
+                maxRetryAttempts: 0,
+                errorQ: "error.q",
+                coreResponseQ: "correct.q"
+            },
+            mockConsole
+        );
+    });
+});
+
+test("serialize form encoded works", async t => {
+    t.plan(1);
+
+    return new Promise(resolve => {
+        const broker = {
+            create: () => {},
+            consume: (queue, callback) => {
+                callback({
+                    content: {
+                        uuid: "000000-0000-0000-000000",
+                        transmissionId: 1,
+                        device: {
+                            id: 1
+                        },
+                        message: {
+                            body: "test"
+                        },
+                        tempr: {
+                            deviceTemprId: 1,
+                            rendered: {
+                                host: "example.com",
+                                port: "",
+                                path: "/",
+                                requestMethod: "POST",
+                                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                                body: { "foo": "bar", "bim": "baz" },
+                                protocol: "http"
+                            }
+                        }
+                    },
+                    ack: () => {},
+                    nack: () => {}
+                });
+            },
+            publish: (exchange, queue, message) => {
+                const lastReq = sandbox.lastOptions();
+
+                t.is("foo=bar&bim=baz", lastReq.body);
+
+                resolve();
+            }
+        };
+
+        main(
+            broker,
+            {
+                maxRetryAttempts: 0,
+                errorQ: "error.q",
+                coreResponseQ: "correct.q"
+            },
+            mockConsole
+        );
+    });
+});
+
 test("request posts to error queue", async t => {
     t.plan(1);
 
